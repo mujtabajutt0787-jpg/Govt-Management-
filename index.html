@@ -19,7 +19,7 @@
         }
         
         .container {
-            max-width: 1300px;
+            max-width: 1400px;
             margin: 0 auto;
         }
         
@@ -309,6 +309,23 @@
             background: #229954;
         }
         
+        .btn-excel {
+            background: #1D6F42;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+        
+        .btn-excel:hover {
+            background: #0e4a2b;
+        }
+        
         .items-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -361,6 +378,15 @@
             overflow-x: auto;
         }
         
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
         table {
             width: 100%;
             border-collapse: collapse;
@@ -401,6 +427,45 @@
             padding: 6px 12px;
             border-radius: 5px;
             cursor: pointer;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .pagination button {
+            background: #00401A;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            border: 2px solid #00401A;
+        }
+        
+        .pagination button:hover:not(:disabled) {
+            background: transparent;
+            color: #00401A;
+        }
+        
+        .pagination button:disabled {
+            background: #cccccc;
+            border-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .page-info {
+            font-size: 16px;
+            font-weight: bold;
+            color: #00401A;
         }
         
         .summary {
@@ -447,7 +512,8 @@
         <!-- Header with Pakistan Logo -->
         <div class="header">
             <div class="logo-area">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/State_emblem_of_Pakistan.svg" alt="Pakistan Logo">
+                <!-- Fixed Logo URL -->
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/State_emblem_of_Pakistan.svg" alt="Pakistan Logo" onerror="this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2245%22%20fill%3D%22%2300401A%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2230%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2215%22%20fill%3D%22%2300401A%22%2F%3E%3C%2Fsvg%3E'">
                 <div>
                     <h1>GM AGENCY OFFICIAL</h1>
                     <div class="govt-badge">Government Registered | ERP v.1.1</div>
@@ -535,9 +601,15 @@
             </div>
         </div>
 
-        <!-- Recent Transactions -->
+        <!-- Recent Transactions with Pagination & Excel Export -->
         <div class="transactions-card">
-            <h3>📋 Recent Transactions</h3>
+            <div class="table-header">
+                <h3>📋 Recent Transactions</h3>
+                <button class="btn-excel" onclick="exportToExcel()">
+                    ⬇️ Export All to Excel
+                </button>
+            </div>
+            
             <table>
                 <thead>
                     <tr>
@@ -554,22 +626,29 @@
                 <tbody id="transactionBody"></tbody>
             </table>
             
+            <!-- Pagination Controls -->
+            <div class="pagination">
+                <button onclick="changePage('prev')" id="prevPageBtn" disabled>◀ Previous</button>
+                <span class="page-info" id="pageInfo">Page 1 of 1</span>
+                <button onclick="changePage('next')" id="nextPageBtn" disabled>Next ▶</button>
+            </div>
+            
             <div class="summary" id="summaryTotals">
-                <span>Total Sales: Rs. 105,634</span>
-                <span>Total Paid: Rs. 12,694</span>
-                <span>Total Balance: Rs. 92,940</span>
+                <span>Total Sales: Rs. 0</span>
+                <span>Total Paid: Rs. 0</span>
+                <span>Total Balance: Rs. 0</span>
             </div>
         </div>
 
         <!-- Footer -->
         <div class="footer">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/State_emblem_of_Pakistan.svg">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/State_emblem_of_Pakistan.svg" onerror="this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2245%22%20fill%3D%22%2300401A%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2230%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2215%22%20fill%3D%22%2300401A%22%2F%3E%3C%2Fsvg%3E'">
             State Property: GM Agency Official | Ministry of Commerce | 0302 3313131
         </div>
     </div>
 
     <script>
-        // ==================== INITIAL DATA ====================
+   // ==================== INITIAL DATA ====================
         let inventory = {
             Vanda: { stock: 2000, price: 1384 },
             Mineral: { stock: 2000, price: 98 },
@@ -581,15 +660,30 @@
             { name: 'Muhammad Ali', phone: '03007654321', address: 'Karachi' }
         ];
         
-        let transactions = [
-            { date: '2026-02-13', customer: 'Ghulam Mustafa', phone: '03001234567', address: 'Lahore', items: '1 items', total: 5100, paid: 5000, balance: 100 },
-            { date: '2026-02-13', customer: 'Ghulam Mustafa', phone: '03001234567', address: 'Lahore', items: '1 items', total: 92840, paid: 0, balance: 92840 },
-            { date: '2026-02-13', customer: 'Ghulam Mustafa', phone: '03001234567', address: 'Lahore', items: '1 items', total: 7694, paid: 7694, balance: 0 }
-        ];
+        // Generate 25 sample transactions for pagination demo
+        let transactions = [];
+        for(let i = 1; i <= 25; i++) {
+            transactions.push({
+                date: '2026-02-' + String(i).padStart(2, '0'),
+                customer: 'Customer ' + i,
+                phone: '0300' + (1000000 + i),
+                address: 'Address ' + i,
+                items: Math.floor(Math.random() * 3) + 1 + ' items',
+                total: Math.floor(Math.random() * 10000) + 1000,
+                paid: Math.floor(Math.random() * 5000),
+                balance: 0
+            });
+        }
+        // Calculate balance for each
+        transactions.forEach(t => t.balance = t.total - t.paid);
         
         let expenses = [];
-        let totalSales = 105634;
+        let totalSales = transactions.reduce((sum, t) => sum + t.total, 0);
         let totalExpenses = 0;
+        
+        // ==================== PAGINATION VARIABLES ====================
+        let currentPage = 1;
+        let rowsPerPage = 10;
         
         // ==================== INITIALIZE ====================
         window.onload = function() {
@@ -817,43 +911,70 @@
             
             alert('Order saved successfully!');
         }
+           // ==================== PAGINATION FUNCTIONS ====================
+        function changePage(direction) {
+            const totalPages = Math.ceil(transactions.filter(t => t.customer !== 'EXPENSE').length / rowsPerPage);
+            
+            if(direction === 'prev' && currentPage > 1) {
+                currentPage--;
+            } else if(direction === 'next' && currentPage < totalPages) {
+                currentPage++;
+            }
+            
+            updateTransactionsDisplay();
+        }
         
         // ==================== TRANSACTIONS DISPLAY ====================
         function updateTransactionsDisplay() {
-            let html = '';
+            // Filter out expenses for display
+            let displayTransactions = transactions.filter(t => t.customer !== 'EXPENSE');
             
-            // Show last 10 transactions in reverse order
-            for(let i = Math.max(0, transactions.length - 10); i < transactions.length; i++) {
-                let t = transactions[i];
-                if(t.customer !== 'EXPENSE') {
-                    html += `
-                        <tr>
-                            <td>${t.date}</td>
-                            <td>${t.customer}</td>
-                            <td>${t.phone || ''}</td>
-                            <td>${t.items}</td>
-                            <td>Rs. ${t.total.toLocaleString()}</td>
-                            <td>Rs. ${t.paid.toLocaleString()}</td>
-                            <td>Rs. ${t.balance.toLocaleString()}</td>
-                            <td>
-                                <button class="btn-wa" onclick="sendWhatsApp('${t.customer}', '${t.phone}', ${t.total})">📱</button>
-                                <button class="btn-print" onclick="printReceipt('${t.customer}', '${t.phone}', '${t.address}', '${t.date}', ${t.total}, ${t.paid}, ${t.balance})">🖨️</button>
-                            </td>
-                        </tr>
-                    `;
-                }
+            // Calculate total pages
+            const totalPages = Math.ceil(displayTransactions.length / rowsPerPage);
+            
+            // Ensure current page is valid
+            if(currentPage > totalPages) {
+                currentPage = Math.max(1, totalPages);
             }
+            
+            // Get current page data
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = Math.min(startIndex + rowsPerPage, displayTransactions.length);
+            const currentPageData = displayTransactions.slice(startIndex, endIndex);
+            
+            // Generate table HTML
+            let html = '';
+            currentPageData.reverse().forEach(t => {
+                html += `
+                    <tr>
+                        <td>${t.date}</td>
+                        <td>${t.customer}</td>
+                        <td>${t.phone || ''}</td>
+                        <td>${t.items}</td>
+                        <td>Rs. ${t.total.toLocaleString()}</td>
+                        <td>Rs. ${t.paid.toLocaleString()}</td>
+                        <td>Rs. ${t.balance.toLocaleString()}</td>
+                        <td>
+                            <button class="btn-wa" onclick="sendWhatsApp('${t.customer}', '${t.phone}', ${t.total})">📱</button>
+                            <button class="btn-print" onclick="printReceipt('${t.customer}', '${t.phone}', '${t.address}', '${t.date}', ${t.total}, ${t.paid}, ${t.balance})">🖨️</button>
+                        </td>
+                    </tr>
+                `;
+            });
             
             document.getElementById('transactionBody').innerHTML = html;
             
+            // Update pagination controls
+            document.getElementById('pageInfo').innerText = `Page ${currentPage} of ${totalPages}`;
+            document.getElementById('prevPageBtn').disabled = currentPage === 1;
+            document.getElementById('nextPageBtn').disabled = currentPage === totalPages;
+            
             // Calculate totals
             let totalSalesAmt = 0, totalPaidAmt = 0, totalBalanceAmt = 0;
-            transactions.forEach(t => {
-                if(t.customer !== 'EXPENSE') {
-                    totalSalesAmt += t.total;
-                    totalPaidAmt += t.paid;
-                    totalBalanceAmt += t.balance;
-                }
+            displayTransactions.forEach(t => {
+                totalSalesAmt += t.total;
+                totalPaidAmt += t.paid;
+                totalBalanceAmt += t.balance;
             });
             
             document.getElementById('summaryTotals').innerHTML = `
@@ -861,6 +982,32 @@
                 <span>Total Paid: Rs. ${totalPaidAmt.toLocaleString()}</span>
                 <span>Total Balance: Rs. ${totalBalanceAmt.toLocaleString()}</span>
             `;
+        }
+        
+        // ==================== EXPORT TO EXCEL ====================
+        function exportToExcel() {
+            // Filter out expenses
+            let exportData = transactions.filter(t => t.customer !== 'EXPENSE');
+            
+            // Create CSV content
+            let csvContent = "Date,Customer,Phone,Address,Items,Total,Paid,Balance\n";
+            
+            exportData.forEach(t => {
+                csvContent += `${t.date},${t.customer},${t.phone},${t.address},${t.items},${t.total},${t.paid},${t.balance}\n`;
+            });
+            
+            // Create blob and download
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `GM_Agency_Transactions_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            alert('Excel file downloaded successfully!');
         }
         
         // ==================== WHATSAPP FUNCTION ====================
@@ -895,7 +1042,7 @@
                 <body>
                     <div class="receipt">
                         <div class="header">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/State_emblem_of_Pakistan.svg" class="logo" style="width:80px">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/State_emblem_of_Pakistan.svg" class="logo" style="width:80px" onerror="this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2280%22%20height%3D%2280%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2245%22%20fill%3D%22%2300401A%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2230%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2215%22%20fill%3D%22%2300401A%22%2F%3E%3C%2Fsvg%3E'">
                             <h1>GM AGENCY OFFICIAL</h1>
                             <p>Government Registered | ERP v.1.1</p>
                         </div>
