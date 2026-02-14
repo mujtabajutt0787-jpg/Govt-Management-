@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GM Agency Official</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            background: #1a1a2e;
+            color: white;
+            padding: 20px 25px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #e94560;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .header h1 span {
+            background: #e94560;
+            padding: 5px 15px;
+            border-radius: 25px;
+            font-size: 16px;
+            margin-left: 15px;
+            font-weight: normal;
+        }
+        
+        .contact {
+            font-size: 18px;
+            background: #0f3460;
+            padding: 8px 20px;
+            border-radius: 30px;
+            border: 1px solid #e94560;
+        }
+        
+        /* Inventory Section */
+        .inventory-section {
+            background: white;
+            padding: 25px;
+            border-radius: 0 0 15px 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #e94560;
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .sub-title {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .inventory-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        
+        .inventory-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(233, 69, 96, 0.2);
+            border-color: #e94560;
+        }
+        
+        .inventory-card h3 {
+            color: #1a1a2e;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .stock-count {
+            font-size: 36px;
+            font-weight: bold;
+            color: #e94560;
+            margin-bottom: 5px;
+        }
+        
+        .stock-label {
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Add Stock Row */
+        .add-stock-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            background: #f0f2f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .stock-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 5px 15px;
+            border-radius: 30px;
+            border: 1px solid #ddd;
+        }
+        
+        .stock-input-group label {
+            font-weight: 600;
+            color: #1a1a2e;
+            min-width: 60px;
+        }
+        
+        .stock-input-group input {
+            width: 80px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+        
+        .add-stock-btn {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #e94560;
+        }
+        
+        .add-stock-btn:hover {
+            background: transparent;
+            color: #e94560;
+        }
+        
+        /* Profit Card */
+        .profit-card {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            border: 1px solid #e94560;
+        }
+        
+        .profit-label {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        .profit-amount {
+            font-size: 42px;
+            font-weight: bold;
+            color: #e94560;
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
+        }
+        
+        .profit-sub {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+        
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        /* Expense Form */
+        .expense-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .expense-form textarea {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+            transition: border-color 0.3s;
+        }
+        
+        .expense-form textarea:focus {
+            border-color: #e94560;
+            outline: none;
+        }
+        
+        .expense-form input {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        
+        .expense-form input:focus {
+            border-color: #e94560;
+            outline: none;
+        }
+        
+        .expense-btn {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #e94560;
+        }
+        
+        .expense-btn:hover {
+            background: transparent;
+            color: #e94560;
+        }
+        
+        /* Sales Order Form */
+        .sales-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-row label {
+            font-weight: 600;
+            color: #1a1a2e;
+            font-size: 14px;
+        }
+        
+        .form-row input {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        
+        .form-row input:focus {
+            border-color: #e94560;
+            outline: none;
+        }
+        
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+        }
+        
+        .item-input {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .item-input label {
+            font-weight: 600;
+            color: #e94560;
+        }
+        
+        .item-input input {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .save-btn {
+            background: #00b894;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #00b894;
+            margin-top: 10px;
+        }
+        
+        .save-btn:hover {
+            background: transparent;
+            color: #00b894;
+        }
+        
+        /* Transactions Table */
+        .transactions-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th {
+            background: #1a1a2e;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .send-btn {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        
+        .send-btn:hover {
+            background: #1a1a2e;
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-around;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 20px;
+            border: 1px solid #e94560;
+        }
+        
+        .summary span {
+            color: #e94560;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+            border-radius: 15px;
+            font-size: 14px;
+            border-top: 3px solid #e94560;
+        }
+        
+        .footer a {
+            color: #e94560;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            background: #e94560;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-block;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .inventory-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            
+            .items-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .add-stock-row {
+                flex-direction: column;
+            }
+            
+            .stock-input-group {
+                width: 100%;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>SYSTEM GOVT <span>GM Agency Official</span></h1>
+            <div class="contact">0302 3313131</div>
+        </div>
+
+        <!-- Inventory Section -->
+        <div class="inventory-section">
+            <div class="section-title">Bulk Marketing (Personalized)</div>
+            <div class="sub-title">Varda agya hú jahánám me [Send to All]</div>
+            
+            <!-- Stock Display -->
+            <div class="inventory-grid">
+                <div class="inventory-card">
+                    <h3>🌿 Vanda</h3>
+                    <div class="stock-count" id="vandaStock">6933</div>
+                    <div class="stock-label">Remaining</div>
+                </div>
+                <div class="inventory-card">
+                    <h3>✨ Minimal</h3>
+                    <div class="stock-count" id="minimalStock">6895</div>
+                    <div class="stock-label">Remaining</div>
+                </div>
+                <div class="inventory-card">
+                    <h3>⭐ UMB</h3>
+                    <div class="stock-count" id="umbStock">6992</div>
+                    <div class="stock-label">Remaining</div>
+                </div>
+            </div>
+
+            <!-- Add Stock Section -->
+            <div class="add-stock-row">
+                <div class="stock-input-group">
+                    <label>Venda:</label>
+                    <input type="number" id="addVenda" value="0" min="0">
+                </div>
+                <div class="stock-input-group">
+                    <label>Minimal:</label>
+                    <input type="number" id="addMinimal" value="0" min="0">
+                </div>
+                <div class="stock-input-group">
+                    <label>UMB:</label>
+                    <input type="number" id="addUmb" value="0" min="0">
+                </div>
+                <button class="add-stock-btn" onclick="addStock()">➕ Add New Stock</button>
+            </div>
+
+            <!-- Live Net Profit -->
+            <div class="profit-card">
+                <div>
+                    <div class="profit-label">Live Net Profit</div>
+                    <div class="profit-sub">Sales - Expenses</div>
+                </div>
+                <div class="profit-amount" id="netProfit">Rs. 105,634</div>
+            </div>
+        </div>
+
+        <!-- Two Column Section -->
+        <div class="two-column">
+            <!-- Quick Expense Card -->
+            <div class="card">
+                <div class="section-title">Quick Expense</div>
+                <div class="expense-form">
+                    <textarea id="expDesc" placeholder="Expense description..."></textarea>
+                    <input type="number" id="expAmount" placeholder="Amount (Rs.)" min="0">
+                    <button class="expense-btn" onclick="addExpense()">💰 Add Expense</button>
+                </div>
+            </div>
+
+            <!-- Create Sales Order Card -->
+            <div class="card">
+                <div class="section-title">Create New Sales Order</div>
+                <div class="sales-form">
+                    <div class="form-row">
+                        <label>📅 Date</label>
+                        <input type="date" id="saleDate" value="2026-02-13">
+                    </div>
+                    <div class="form-row">
+                        <label>👤 Customer Name</label>
+                        <input type="text" id="customerName" placeholder="Enter customer name">
+                    </div>
+                    
+                    <div class="items-grid">
+                        <div class="item-input">
+                            <label>Vanda</label>
+                            <input type="number" id="vandaQty" value="0" min="0" oninput="calculateTotal()">
+                        </div>
+                        <div class="item-input">
+                            <label>Minimal</label>
+                            <input type="number" id="minimalQty" value="0" min="0" oninput="calculateTotal()">
+                        </div>
+                        <div class="item-input">
+                            <label>UMB</label>
+                            <input type="number" id="umbQty" value="0" min="0" oninput="calculateTotal()">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <label>💰 Total BDI (Rs.)</label>
+                        <input type="number" id="totalBdi" value="0" readonly style="background:#f0f2f5; font-weight:bold; color:#e94560;">
+                    </div>
+                    
+                    <div class="form-row">
+                        <label>💵 Cash Received</label>
+                        <input type="number" id="cashReceived" value="0" min="0">
+                    </div>
+                    
+                    <button class="save-btn" onclick="saveOrder()">💾 Save & Record Order</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="transactions-card">
+            <div class="section-title">Recent Transactions</div>
+            <table id="transactionTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Customer</th>
+                        <th>Items Sold</th>
+                        <th>Total (Rs.)</th>
+                        <th>Paid (Rs.)</th>
+                        <th>Balance (Rs.)</th>
+                        <th>Manage</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Data will be inserted here -->
+                </tbody>
+            </table>
+            
+            <div class="summary" id="summaryTotals">
+                <span>Rs. 105,634</span>
+                <span>Rs. 12,694</span>
+                <span>Rs. 92,940</span>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            ⚡ State Property: GM Agency Official System | ERP v.1.1 | Contact: <a href="tel:03023313131">0302 3313131</a>
+        </div>
+    </div>
+
+    <script>
+        // ==================== INITIAL DATA ====================
+        let vandaStock = 6933;
+        let minimalStock = 6895;
+        let umbStock = 6992;
+        let totalSales = 105634;  // Starting sales
+        let totalExpenses = 0;     // Starting expenses
+        
+        // Sample transactions (jaisa image mein tha)
+        let transactions = [
+            {date: '2026-02-13', customer: 'Ghulam Mustafa', items: 1, total: 5100, paid: 5000, balance: 100},
+            {date: '2026-02-13', customer: 'Ghulam Mustafa', items: 1, total: 92840, paid: 0, balance: 92840},
+            {date: '2026-02-13', customer: 'Ghulam Mustafa', items: 1, total: 7694, paid: 7694, balance: 0}
+        ];
+        
+        // Product prices (assuming - aap change kar sakte hain)
+        const PRICES = {
+            vanda: 100,    // 1 Vanda ka price
+            minimal: 150,  // 1 Minimal ka price
+            umb: 200       // 1 UMB ka price
+        };
+
+        // ==================== UPDATE DISPLAY FUNCTION ====================
+        function updateDisplay() {
+            // Update stock display
+            document.getElementById('vandaStock').innerText = vandaStock;
+            document.getElementById('minimalStock').innerText = minimalStock;
+            document.getElementById('umbStock').innerText = umbStock;
+            
+            // Update net profit
+            let netProfit = totalSales - totalExpenses;
+            document.getElementById('netProfit').innerText = 'Rs. ' + netProfit.toLocaleString();
+            
+               // Update transactions table
+            let tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            let totalSum = 0;
+            let paidSum = 0;
+            let balanceSum = 0;
+            
+            transactions.forEach(t => {
+                totalSum += t.total;
+                paidSum += t.paid;
+                balanceSum += t.balance;
+                
+                let row = `<tr>
+                    <td>${t.date}</td>
+                    <td><strong>${t.customer}</strong></td>
+                    <td><span class="status-badge">${t.items} Item(s)</span></td>
+                    <td>Rs. ${t.total.toLocaleString()}</td>
+                    <td>Rs. ${t.paid.toLocaleString()}</td>
+                    <td>Rs. ${t.balance.toLocaleString()}</td>
+                    <td><button class="send-btn" onclick="sendMessage('${t.customer}')">📤 Send</button></td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+            
+            // Update summary totals
+            document.getElementById('summaryTotals').innerHTML = `
+                <span>Rs. ${totalSum.toLocaleString()}</span>
+                <span>Rs. ${paidSum.toLocaleString()}</span>
+                <span>Rs. ${balanceSum.toLocaleString()}</span>
+            `;
+        }
+
+        // ==================== ADD STOCK FUNCTION ====================
+        function addStock() {
+            let addVenda = parseInt(document.getElementById('addVenda').value) || 0;
+            let addMinimal = parseInt(document.getElementById('addMinimal').value) || 0;
+            let addUmb = parseInt(document.getElementById('addUmb').value) || 0;
+            
+            if(addVenda < 0 || addMinimal < 0 || addUmb < 0) {
+                alert('Quantity cannot be negative!');
+                return;
+            }
+            
+            if(addVenda === 0 && addMinimal === 0 && addUmb === 0) {
+                alert('Please enter quantity to add');
+                return;
+            }
+            
+            vandaStock += addVenda;
+            minimalStock += addMinimal;
+            umbStock += addUmb;
+            
+            updateDisplay();
+            
+            // Reset inputs
+            document.getElementById('addVenda').value = 0;
+            document.getElementById('addMinimal').value = 0;
+            document.getElementById('addUmb').value = 0;
+            
+            alert('✅ Stock added successfully!');
+        }
+
+        // ==================== ADD EXPENSE FUNCTION ====================
+        function addExpense() {
+            let desc = document.getElementById('expDesc').value.trim();
+            let amount = parseInt(document.getElementById('expAmount').value) || 0;
+            
+            if(desc === '') {
+                alert('Please enter expense description');
+                return;
+            }
+            
+            if(amount <= 0) {
+                alert('Please enter valid amount');
+                return;
+            }
+            
+            totalExpenses += amount;
+            updateDisplay();
+            
+            // Reset form
+            document.getElementById('expDesc').value = '';
+            document.getElementById('expAmount').value = '';
+            
+            alert('💰 Expense added: ' + desc + ' - Rs. ' + amount);
+        }
+
+        // ==================== CALCULATE TOTAL FUNCTION ====================
+        function calculateTotal() {
+            let vandaQty = parseInt(document.getElementById('vandaQty').value) || 0;
+            let minimalQty = parseInt(document.getElementById('minimalQty').value) || 0;
+            let umbQty = parseInt(document.getElementById('umbQty').value) || 0;
+            
+            let total = (vandaQty * PRICES.vanda) + (minimalQty * PRICES.minimal) + (umbQty * PRICES.umb);
+            document.getElementById('totalBdi').value = total;
+        }
+
+        // ==================== SAVE ORDER FUNCTION ====================
+        function saveOrder() {
+            // Get form values
+            let date = document.getElementById('saleDate').value;
+            let customer = document.getElementById('customerName').value.trim();
+            let vandaQty = parseInt(document.getElementById('vandaQty').value) || 0;
+            let minimalQty = parseInt(document.getElementById('minimalQty').value) || 0;
+            let umbQty = parseInt(document.getElementById('umbQty').value) || 0;
+            let total = parseInt(document.getElementById('totalBdi').value) || 0;
+            let cashReceived = parseInt(document.getElementById('cashReceived').value) || 0;
+            
+            // Validation
+            if(customer === '') {
+                alert('Please enter customer name');
+                return;
+            }
+            
+            if(vandaQty === 0 && minimalQty === 0 && umbQty === 0) {
+                alert('Please add at least one item');
+                return;
+            }
+            
+            // Check stock
+            if(vandaQty > vandaStock || minimalQty > minimalStock || umbQty > umbStock) {
+                alert('⚠️ Insufficient stock! Please check remaining quantities.');
+                return;
+            }
+            
+            if(total <= 0) {
+                alert('Total amount should be greater than 0');
+                return;
+            }
+            
+            if(cashReceived < 0) {
+                alert('Cash received cannot be negative');
+                return;
+            }
+            
+            // Calculate balance
+            let balance = total - cashReceived;
+            
+            // Count items sold
+            let itemsSold = 0;
+            if(vandaQty > 0) itemsSold++;
+            if(minimalQty > 0) itemsSold++;
+            if(umbQty > 0) itemsSold++;
+            
+            // Add to transactions
+            transactions.push({
+                date: date,
+                customer: customer,
+                items: itemsSold,
+                total: total,
+                paid: cashReceived,
+                balance: balance
+            });
+            
+            // Update stock
+            vandaStock -= vandaQty;
+            minimalStock -= minimalQty;
+            umbStock -= umbQty;
+            
+            // Update total sales
+            totalSales += total;
+            
+            // Update display
+            updateDisplay();
+            
+            // Reset form
+            document.getElementById('customerName').value = '';
+            document.getElementById('vandaQty').value = 0;
+            document.getElementById('minimalQty').value = 0;
+            document.getElementById('umbQty').value = 0;
+            document.getElementById('totalBdi').value = 0;
+            document.getElementById('cashReceived').value = 0;
+            
+            alert('✅ Order saved successfully!\nCustomer: ' + customer + '\nTotal: Rs. ' + total);
+        }
+
+        // ==================== SEND MESSAGE FUNCTION ====================
+        function sendMessage(customer) {
+            alert('📤 Send receipt/message to ' + customer + '?\n(This is a demo - in real app, WhatsApp/Email will open)');
+        }
+
+        // ==================== INITIAL DISPLAY ====================
+        updateDisplay();
+    </script>
+</body>
+</html>
