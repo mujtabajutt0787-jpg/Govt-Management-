@@ -1,466 +1,426 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <base target="_top">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>GM Agency Official</title>
-    <style>
-        /* Pakistan Government Look */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', 'Arial', sans-serif;
-        }
-        body {
-            background: #f0f4f8;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        /* Pakistan Green Header */
-        .header {
-            background: #00401A;  /* Pakistan Green */
-            color: white;
-            padding: 20px;
-            border-radius: 15px 15px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 5px solid #FFFFFF;
-        }
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .logo-area img {
-            width: 60px;
-            height: auto;
-        }
-        .govt-text {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-        .contact {
-            background: #FFFFFF22;
-            padding: 10px 20px;
-            border-radius: 30px;
-            border: 1px solid white;
-        }
-        /* Rest of the CSS - same as before but with Pakistan green theme */
-        /* ... (baqi CSS previous solution jaisi hai lekin colors Pakistan green shade mein) ... */
-    </style>
-</head>
-<body>
-    <div class="container">
-        <!-- Header with Pakistan Logo -->
-        <div class="header">
-            <div class="logo-area">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/State_emblem_of_Pakistan.svg" alt="Pakistan Logo">
-                <div>
-                    <h1>GM AGENCY OFFICIAL</h1>
-                    <div class="govt-text">Government Registered | ERP v.1.1</div>
+// ==================== GM AGENCY OFFICIAL - COMPLETE SINGLE FILE ====================
+
+// Sheet names
+const INVENTORY_SHEET = 'Inventory';
+const CUSTOMERS_SHEET = 'Customers';
+const TRANSACTIONS_SHEET = 'Transactions';
+
+// ==================== WEB APP LOAD ====================
+function doGet() {
+  return HtmlService.createHtmlOutput(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>GM Agency Official</title>
+        <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+            body { background: #f0f4f8; padding: 15px; }
+            .container { max-width: 1400px; margin: 0 auto; }
+            .header { background: #00401A; color: white; padding: 15px; border-radius: 15px 15px 0 0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; border-bottom: 3px solid white; }
+            .logo-area { display: flex; align-items: center; gap: 10px; }
+            .logo-area img { width: 50px; background: white; border-radius: 50%; padding: 5px; }
+            .govt-badge { background: #FFFFFF22; padding: 5px 10px; border-radius: 20px; font-size: 12px; }
+            .contact { background: #FFFFFF22; padding: 8px 15px; border-radius: 30px; border: 1px solid white; }
+            .inventory-section, .card, .transactions-card { background: white; padding: 20px; border-radius: 0 0 15px 15px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+            h2, h3 { color: #00401A; margin-bottom: 15px; border-bottom: 2px solid #00401A; padding-bottom: 5px; }
+            .inventory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 15px; margin-bottom: 20px; }
+            .inventory-card { background: #f8f9fa; padding: 15px; border-radius: 10px; border: 1px solid #ddd; }
+            .stock { font-size: 28px; font-weight: bold; color: #00401A; }
+            .price { font-size: 18px; color: #e67e22; }
+            .edit-btn { background: #00401A; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; margin-left: 5px; }
+            .add-stock-row { background: #f0f4f8; padding: 15px; border-radius: 10px; margin: 15px 0; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+            .stock-input { display: flex; align-items: center; gap: 5px; }
+            .stock-input input { width: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 5px; }
+            .profit-card { background: linear-gradient(135deg, #00401A, #006633); color: white; padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
+            .profit-amount { font-size: 32px; font-weight: bold; }
+            .two-column { display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px; margin-bottom: 20px; }
+            @media (max-width:700px){ .two-column{grid-template-columns:1fr;} }
+            .form-group { margin-bottom: 15px; }
+            .form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #00401A; }
+            .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
+            .items-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; background: #f8f9fa; padding: 15px; border-radius: 10px; }
+            .item-input { text-align: center; }
+            .item-input label { font-weight: bold; color: #e67e22; }
+            .item-input input { width: 100%; padding: 8px; text-align: center; border: 1px solid #ddd; border-radius: 5px; }
+            .total-row { background: #00401A; color: white; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; font-size: 20px; font-weight: bold; margin: 15px 0; }
+            .btn-primary, .btn-success, .btn-danger { padding: 12px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; margin: 5px 0; }
+            .btn-primary { background: #00401A; color: white; }
+            .btn-success { background: #27ae60; color: white; }
+            .btn-danger { background: #e74c3c; color: white; }
+            .btn-wa { background: #25D366; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+            .btn-print { background: #3498db; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+            table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+            th { background: #00401A; color: white; padding: 12px; text-align: left; }
+            td { padding: 10px; border-bottom: 1px solid #ddd; }
+            .table-responsive { overflow-x: auto; }
+            .summary { background: #f0f4f8; padding: 15px; border-radius: 8px; display: flex; flex-wrap: wrap; justify-content: space-around; font-weight: bold; margin-top: 15px; }
+            .footer { text-align: center; padding: 15px; background: #00401A; color: white; border-radius: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+            .footer img { width: 30px; background: white; border-radius: 50%; padding: 3px; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <div class="logo-area">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/State_emblem_of_Pakistan.svg">
+                    <div><h1>GM AGENCY OFFICIAL</h1><div class="govt-badge">Govt Registered | ERP v1.1</div></div>
                 </div>
+                <div class="contact">📞 0302 3313131</div>
             </div>
-            <div class="contact">📞 0302 3313131</div>
-        </div>
 
-        <!-- Inventory Section with Edit Prices -->
-        <div class="inventory-section">
-            <h2>📦 Current Stock & Prices</h2>
-            <div class="inventory-grid" id="inventoryGrid">
-                <!-- Data will load from Google Sheets -->
+            <div class="inventory-section">
+                <h2>📦 Current Stock & Prices</h2>
+                <div class="inventory-grid" id="inventoryGrid">Loading...</div>
+                <div class="add-stock-row" id="addStockSection"></div>
+                <div class="profit-card" id="profitCard"></div>
             </div>
-            
-            <!-- Add Stock Section -->
-            <div class="add-stock-row">
-                <h3>Add New Stock:</h3>
-                <div id="addStockInputs"></div>
-                <button onclick="addStock()" class="btn-primary">➕ Add to Inventory</button>
-            </div>
-            
-            <!-- Live Profit Card -->
-            <div class="profit-card" id="profitCard">
-                <!-- Dynamic from Google Sheets -->
-            </div>
-        </div>
 
-        <!-- Quick Expense + New Order -->
-        <div class="two-column">
-            <!-- Quick Expense -->
-            <div class="card">
-                <h3>💰 Quick Expense</h3>
-                <input type="text" id="expDesc" placeholder="Description">
-                <input type="number" id="expAmount" placeholder="Amount (Rs.)">
-                <button onclick="addExpense()" class="btn-danger">Add Expense</button>
-            </div>
-            
-            <!-- New Sales Order -->
-            <div class="card">
-                <h3>🛒 Create New Sales Order</h3>
-                <div class="sales-form">
-                    <input type="date" id="saleDate">
-                    
-                    <!-- Customer Selection -->
-                    <select id="customerSelect" onchange="loadCustomer()">
-                        <option value="">-- Select Existing Customer --</option>
-                    </select>
-                    
-                    <h4>OR Add New Customer:</h4>
-                    <input type="text" id="customerName" placeholder="Full Name">
-                    <input type="tel" id="customerPhone" placeholder="Phone Number">
-                    <input type="text" id="customerAddress" placeholder="Address">
-                    <input type="text" id="customerCity" placeholder="City">
-                    
-                    <!-- Item Quantities -->
+            <div class="two-column">
+                <div class="card">
+                    <h3>💰 Quick Expense</h3>
+                    <div class="form-group"><label>Description</label><input type="text" id="expDesc"></div>
+                    <div class="form-group"><label>Amount (Rs.)</label><input type="number" id="expAmount"></div>
+                    <button class="btn-danger" onclick="addExpense()">Add Expense</button>
+                </div>
+                <div class="card">
+                    <h3>🛒 Create New Sales Order</h3>
+                    <div class="form-group"><label>Date</label><input type="date" id="saleDate"></div>
+                    <div class="form-group"><label>Select Customer</label><select id="customerSelect" onchange="loadCustomer()"><option value="">-- Select --</option></select></div>
+                    <h4>OR New Customer:</h4>
+                    <div class="form-group"><input type="text" id="customerName" placeholder="Full Name"></div>
+                    <div class="form-group"><input type="tel" id="customerPhone" placeholder="Phone"></div>
+                    <div class="form-group"><input type="text" id="customerAddress" placeholder="Address"></div>
+                    <div class="form-group"><input type="text" id="customerCity" placeholder="City"></div>
+                    <h4>Items:</h4>
                     <div class="items-grid" id="itemsGrid"></div>
-                    
-                    <!-- Totals -->
-                    <div class="total-row">
-                        <span>Total BDI:</span>
-                        <span id="totalBdi">0</span>
-                    </div>
-                    <input type="number" id="cashReceived" placeholder="Cash Received" value="0">
-                    
-                    <button onclick="saveOrder()" class="btn-success">💾 Save & Record Order</button>
+                    <div class="total-row"><span>Total BDI:</span> <span id="totalBdi">0</span></div>
+                    <div class="form-group"><label>Cash Received</label><input type="number" id="cashReceived" value="0"></div>
+                    <button class="btn-success" onclick="saveOrder()">💾 Save Order</button>
                 </div>
             </div>
-        </div>
 
-        <!-- Recent Transactions -->
-        <div class="transactions-card">
-            <h3>📋 Recent Transactions</h3>
-            <div class="table-responsive">
-                <table id="transactionsTable">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Customer</th>
-                            <th>Phone</th>
-                            <th>Items</th>
-                            <th>Total</th>
-                            <th>Paid</th>
-                            <th>Balance</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="transactionBody"></tbody>
-                </table>
+            <div class="transactions-card">
+                <h3>📋 Recent Transactions</h3>
+                <div class="table-responsive">
+                    <table><thead><tr><th>Date</th><th>Customer</th><th>Phone</th><th>Items</th><th>Total</th><th>Paid</th><th>Balance</th><th>Action</th></tr></thead><tbody id="transactionBody"></tbody></table>
+                </div>
+                <div class="summary" id="summaryTotals"></div>
             </div>
-            <div class="summary" id="summaryTotals"></div>
+
+            <div class="footer">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/State_emblem_of_Pakistan.svg">
+                State Property: GM Agency | Ministry of Commerce | 0302 3313131
+            </div>
         </div>
 
-        <!-- Footer -->
-        <div class="footer">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/State_emblem_of_Pakistan.svg" width="30">
-            State Property: GM Agency Official | Ministry of Commerce | 0302 3313131
-        </div>
-    </div>
-
-    <script>
-        // Global variables
-        let inventory = {};
-        let customers = [];
-        let transactions = [];
-        let totals = {};
-        
-        // Prices aapke diye hue
-        const PRICES = {
-            Vanda: 1384,
-            Mineral: 98,
-            UMB: 327
-        };
-        
-        // Load all data when page starts
-        window.onload = function() {
-            google.script.run.withSuccessHandler(displayData).getAllData();
-        };
-        
-        function displayData(data) {
-            inventory = data.inventory;
-            customers = data.customers;
-            transactions = data.transactions.list;
-            totals = data.transactions.totals;
+        <script>
+            let inventory = {}, customers = [], transactions = [], totals = {};
+            const PRICES = { Vanda:1384, Mineral:98, UMB:327 };
             
-            updateInventoryDisplay();
-            updateCustomerDropdown();
-            updateTransactionsDisplay();
-        }
-        
-        function updateInventoryDisplay() {
-            let html = '';
-            for (let item in inventory) {
-                html += `
-                    <div class="inventory-card">
-                        <h3>${item}</h3>
-                        <div class="stock">Stock: <span class="stock-count">${inventory[item].stock}</span></div>
-                        <div class="price">Price: Rs. <span class="price-value">${inventory[item].price}</span>
-                            <button onclick="editPrice('${item}')" class="edit-btn">✏️ Edit</button>
-                        </div>
-                    </div>
-                `;
-            }
-            document.getElementById('inventoryGrid').innerHTML = html;
-            
-            // Add stock inputs
-            let inputs = '';
-            for (let item in inventory) {
-                inputs += `
-                    <div class="stock-input">
-                        <label>${item}:</label>
-                        <input type="number" id="add_${item}" value="0" min="0">
-                    </div>
-                `;
-            }
-            document.getElementById('addStockInputs').innerHTML = inputs;
-            
-            // Profit card
-            document.getElementById('profitCard').innerHTML = `
-                <div>Live Net Profit</div>
-                <div class="profit-amount">Rs. ${totals.netProfit.toLocaleString()}</div>
-                <div>Sales: Rs. ${totals.sales.toLocaleString()} | Expenses: Rs. ${totals.expenses.toLocaleString()}</div>
-            `;
-        }
-        
-        function editPrice(item) {
-            let newPrice = prompt(`Enter new price for ${item}:`, inventory[item].price);
-            if (newPrice && !isNaN(newPrice) && newPrice > 0) {
-                google.script.run.withSuccessHandler(function(newInventory) {
-                    inventory = newInventory;
-                    updateInventoryDisplay();
-                    alert('Price updated successfully!');
-                }).updatePrice(item, parseInt(newPrice));
-            }
-        }
-        
-        function addStock() {
-            let updates = {};
-            for (let item in inventory) {
-                let qty = parseInt(document.getElementById(`add_${item}`).value) || 0;
-                if (qty > 0) {
-                    updates[item] = qty;
-                }
-            }
-            
-            if (Object.keys(updates).length === 0) {
-                alert('Please enter quantity to add');
-                return;
-            }
-            
-            // Update each item
-            for (let item in updates) {
-                google.script.run.withSuccessHandler(function(newInventory) {
-                    inventory = newInventory;
-                    updateInventoryDisplay();
-                }).addStock(item, updates[item]);
-            }
-            alert('Stock added successfully!');
-        }
-        
-        function addExpense() {
-            let desc = document.getElementById('expDesc').value;
-            let amount = parseInt(document.getElementById('expAmount').value);
-            
-            if (!desc || !amount) {
-                alert('Please enter description and amount');
-                return;
-            }
-            
-            google.script.run.withSuccessHandler(function(newTransactions) {
-                transactions = newTransactions.list;
-                totals = newTransactions.totals;
-                updateTransactionsDisplay();
-                updateInventoryDisplay(); // profit update
-                document.getElementById('expDesc').value = '';
-                document.getElementById('expAmount').value = '';
-                alert('Expense added');
-            }).addExpense(desc, amount);
-        }
-        
-        function updateCustomerDropdown() {
-            let select = document.getElementById('customerSelect');
-            let options = '<option value="">-- Select Existing Customer --</option>';
-            customers.forEach(c => {
-                options += `<option value="${c.name}" data-phone="${c.phone}" data-address="${c.address}" data-city="${c.city}">${c.name} (${c.phone})</option>`;
-            });
-            select.innerHTML = options;
-        }
-        
-        function loadCustomer() {
-            let select = document.getElementById('customerSelect');
-            let selected = select.options[select.selectedIndex];
-            if (selected.value) {
-                document.getElementById('customerName').value = selected.value;
-                document.getElementById('customerPhone').value = selected.dataset.phone;
-                document.getElementById('customerAddress').value = selected.dataset.address;
-                document.getElementById('customerCity').value = selected.dataset.city || '';
-            }
-        }
-        
-        function updateTransactionsDisplay() {
-            let tbody = document.getElementById('transactionBody');
-            let rows = '';
-            
-            transactions.slice(-10).reverse().forEach(t => {
-                if (t.customer !== 'EXPENSE') {
-                    rows += `
-                        <tr>
-                            <td>${t.date}</td>
-                            <td>${t.customer}</td>
-                            <td>${t.phone || ''}</td>
-                            <td>${t.items}</td>
-                            <td>Rs. ${t.total.toLocaleString()}</td>
-                            <td>Rs. ${t.paid.toLocaleString()}</td>
-                            <td>Rs. ${t.balance.toLocaleString()}</td>
-                            <td>
-                                <button onclick="sendWhatsApp('${t.customer}', '${t.phone}', ${t.total}, ${t.balance})" class="btn-wa">📱 WA</button>
-                                <button onclick="printReceipt('${t.customer}', '${t.phone}', '${t.address}', '${t.date}', ${t.total}, ${t.paid}, ${t.balance})" class="btn-print">🖨️ Print</button>
-                            </td>
-                        </tr>
-                    `;
-                }
-            });
-            
-            tbody.innerHTML = rows;
-            
-            document.getElementById('summaryTotals').innerHTML = `
-                <span>Total Sales: Rs. ${totals.sales.toLocaleString()}</span>
-                <span>Total Paid: Rs. ${totals.paid.toLocaleString()}</span>
-                <span>Total Balance: Rs. ${totals.balance.toLocaleString()}</span>
-            `;
-        }
-        
-        function sendWhatsApp(name, phone, total, balance) {
-            if (!phone) {
-                alert('Phone number not available');
-                return;
-            }
-            let message = `GM Agency Official\nCustomer: ${name}\nTotal: Rs. ${total}\nBalance: Rs. ${balance}\nThank you for your business!`;
-            let url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-            window.open(url, '_blank');
-        }
-        
-        function printReceipt(name, phone, address, date, total, paid, balance) {
-            let printWindow = window.open('', '_blank');
-            printWindow.document.write(`
-                <html>
-                <head>
-                    <title>GM Agency Receipt</title>
-                    <style>
-                        body { font-family: Arial; padding: 40px; }
-                        .header { text-align: center; border-bottom: 2px solid #00401A; padding-bottom: 20px; }
-                        .logo { width: 80px; }
-                        .receipt { max-width: 800px; margin: 0 auto; }
-                        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-                        td { padding: 10px; border-bottom: 1px solid #ddd; }
-                        .total { font-size: 18px; font-weight: bold; }
-                        .footer { margin-top: 40px; text-align: center; font-size: 12px; }
-                    </style>
-                </head>
-                <body>
-                    <div class="receipt">
-                        <div class="header">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/State_emblem_of_Pakistan.svg" class="logo">
-                            <h1>GM AGENCY OFFICIAL</h1>
-                            <p>Government Registered | ERP v.1.1</p>
-                        </div>
-                        
-                        <h2>Sales Receipt</h2>
-                        <table>
-                            <tr><td>Date:</td><td>${date}</td></tr>
-                            <tr><td>Customer Name:</td><td>${name}</td></tr>
-                            <tr><td>Phone:</td><td>${phone || 'N/A'}</td></tr>
-                            <tr><td>Address:</td><td>${address || 'N/A'}</td></tr>
-                            <tr><td>Total Amount:</td><td>Rs. ${total}</td></tr>
-                            <tr><td>Paid:</td><td>Rs. ${paid}</td></tr>
-                            <tr><td>Balance:</td><td>Rs. ${balance}</td></tr>
-                        </table>
-                        
-                        <p class="total">Status: ${balance === 0 ? '✅ Paid' : '⏳ Pending'}</p>
-                        
-                        <div class="footer">
-                            <p>Thank you for your business!</p>
-                            <p>Contact: 0302 3313131 | Ministry of Commerce</p>
-                        </div>
-                    </div>
-                    <script>window.print();<\/script>
-                </body>
-                </html>
-            `);
-            printWindow.document.close();
-        }
-        
-        // Calculate total function for sales form
-        window.calculateTotal = function() {
-            let vanda = parseInt(document.getElementById('vandaQty')?.value) || 0;
-            let mineral = parseInt(document.getElementById('mineralQty')?.value) || 0;
-            let umb = parseInt(document.getElementById('umbQty')?.value) || 0;
-            
-            let total = (vanda * 1384) + (mineral * 98) + (umb * 327);
-            document.getElementById('totalBdi').innerText = total;
-            return total;
-        };
-        
-        // Save order function
-        window.saveOrder = function() {
-            let order = {
-                date: document.getElementById('saleDate').value,
-                customer: document.getElementById('customerName').value,
-                phone: document.getElementById('customerPhone').value,
-                address: document.getElementById('customerAddress').value,
-                city: document.getElementById('customerCity').value,
-                vandaQty: parseInt(document.getElementById('vandaQty')?.value) || 0,
-                mineralQty: parseInt(document.getElementById('mineralQty')?.value) || 0,
-                umbQty: parseInt(document.getElementById('umbQty')?.value) || 0,
-                total: calculateTotal(),
-                paid: parseInt(document.getElementById('cashReceived').value) || 0,
-                isNewCustomer: !document.getElementById('customerSelect').value
+            window.onload = ()=>{
+                document.getElementById('saleDate').value = new Date().toISOString().split('T')[0];
+                google.script.run.withSuccessHandler(displayData).getAllData();
             };
             
-            order.balance = order.total - order.paid;
-            
-            // Count items
-            let items = 0;
-            if(order.vandaQty > 0) items++;
-            if(order.mineralQty > 0) items++;
-            if(order.umbQty > 0) items++;
-            order.items = items + ' item(s)';
-            
-            if(!order.customer) {
-                alert('Please enter customer name');
-                return;
+            function displayData(d) {
+                inventory = d.inventory; customers = d.customers; transactions = d.transactions.list; totals = d.transactions.totals;
+                updateInventory(); updateCustomerDropdown(); updateTransactions(); setupItemsGrid();
             }
             
-            if(order.total <= 0) {
-                alert('Please add items');
-                return;
+            function updateInventory() {
+                let html = '';
+                for(let i in inventory) html += \`<div class="inventory-card"><h3>\${i}</h3><div class="stock">\${inventory[i].stock}</div><div>Remaining</div><div class="price">Rs. \${inventory[i].price} <button class="edit-btn" onclick="editPrice('\${i}')">Edit</button></div></div>\`;
+                document.getElementById('inventoryGrid').innerHTML = html;
+                
+                let addHtml = '<h3>Add Stock:</h3>';
+                for(let i in inventory) addHtml += \`<div class="stock-input"><label>\${i}:</label><input type="number" id="add_\${i}" value="0" min="0"></div>\`;
+                addHtml += '<button class="btn-primary" onclick="addStock()">➕ Add to Inventory</button>';
+                document.getElementById('addStockSection').innerHTML = addHtml;
+                
+                document.getElementById('profitCard').innerHTML = \`<div>Live Net Profit</div><div class="profit-amount">Rs. \${totals.netProfit.toLocaleString()}</div>\`;
             }
             
-            google.script.run.withSuccessHandler(function(result) {
-                inventory = result.inventory;
-                transactions = result.transactions.list;
-                totals = result.transactions.totals;
-                updateInventoryDisplay();
-                updateTransactionsDisplay();
+            function setupItemsGrid() {
+                let h = '';
+                for(let i in PRICES) h += \`<div class="item-input"><label>\${i}</label><input type="number" id="qty_\${i}" value="0" min="0" oninput="calcTotal()"></div>\`;
+                document.getElementById('itemsGrid').innerHTML = h;
+            }
+            
+            function calcTotal() {
+                let v = +document.getElementById('qty_Vanda')?.value || 0;
+                let m = +document.getElementById('qty_Mineral')?.value || 0;
+                let u = +document.getElementById('qty_UMB')?.value || 0;
+                let t = v*1384 + m*98 + u*327;
+                document.getElementById('totalBdi').innerText = t;
+                return t;
+            }
+            
+            function editPrice(item) {
+                let np = prompt('New price for '+item, inventory[item].price);
+                if(np && !isNaN(np) && np>0) google.script.run.withSuccessHandler(i=>{inventory=i; updateInventory(); alert('Price updated');}).updatePrice(item, +np);
+            }
+            
+            function addStock() {
+                for(let i in inventory) {
+                    let q = +document.getElementById('add_'+i)?.value || 0;
+                    if(q>0) google.script.run.withSuccessHandler(inn=>{inventory=inn; updateInventory();}).addStock(i,q);
+                }
+                alert('Stock added');
+            }
+            
+            function addExpense() {
+                let d = document.getElementById('expDesc').value, a = +document.getElementById('expAmount').value;
+                if(!d||!a) return alert('Enter description and amount');
+                google.script.run.withSuccessHandler(t=>{transactions=t.list; totals=t.totals; updateTransactions(); updateInventory(); document.getElementById('expDesc').value=''; document.getElementById('expAmount').value=''; alert('Expense added');}).addExpense(d,a);
+            }
+            
+            function updateCustomerDropdown() {
+                let s = '<option value="">-- Select Customer --</option>';
+                customers.forEach(c=> s+= \`<option value="\${c.name}" data-phone="\${c.phone}" data-address="\${c.address}" data-city="\${c.city}">\${c.name} (\${c.phone})</option>\`);
+                document.getElementById('customerSelect').innerHTML = s;
+            }
+            
+            function loadCustomer() {
+                let sel = document.getElementById('customerSelect'), opt = sel.options[sel.selectedIndex];
+                if(opt.value) {
+                    document.getElementById('customerName').value = opt.value;
+                    document.getElementById('customerPhone').value = opt.dataset.phone;
+                    document.getElementById('customerAddress').value = opt.dataset.address;
+                    document.getElementById('customerCity').value = opt.dataset.city || '';
+                }
+            }
+            
+            function saveOrder() {
+                let v = +document.getElementById('qty_Vanda')?.value||0, m = +document.getElementById('qty_Mineral')?.value||0, u = +document.getElementById('qty_UMB')?.value||0;
+                let tot = calcTotal(), paid = +document.getElementById('cashReceived').value||0;
+                let order = {
+                    date: document.getElementById('saleDate').value,
+                    customer: document.getElementById('customerName').value,
+                    phone: document.getElementById('customerPhone').value,
+                    address: document.getElementById('customerAddress').value,
+                    city: document.getElementById('customerCity').value,
+                    vandaQty: v, mineralQty: m, umbQty: u,
+                    total: tot, paid: paid, balance: tot-paid,
+                    items: (v>0?1:0)+(m>0?1:0)+(u>0?1:0)+' item(s)',
+                    isNewCustomer: !document.getElementById('customerSelect').value
+                };
+                if(!order.customer) return alert('Enter customer name');
+                if(tot<=0) return alert('Add items');
                 
-                // Reset form
-                document.getElementById('customerName').value = '';
-                document.getElementById('customerPhone').value = '';
-                document.getElementById('customerAddress').value = '';
-                document.getElementById('customerCity').value = '';
-                document.getElementById('cashReceived').value = '0';
-                document.getElementById('vandaQty').value = '0';
-                document.getElementById('mineralQty').value = '0';
-                document.getElementById('umbQty').value = '0';
-                document.getElementById('totalBdi').innerText = '0';
+                google.script.run.withSuccessHandler(r=>{
+                    inventory = r.inventory; transactions = r.transactions.list; totals = r.transactions.totals;
+                    updateInventory(); updateTransactions();
+                    document.getElementById('customerName').value = ''; document.getElementById('customerPhone').value = '';
+                    document.getElementById('customerAddress').value = ''; document.getElementById('customerCity').value = '';
+                    document.getElementById('qty_Vanda').value = '0'; document.getElementById('qty_Mineral').value = '0';
+                    document.getElementById('qty_UMB').value = '0'; document.getElementById('cashReceived').value = '0';
+                    document.getElementById('totalBdi').innerText = '0';
+                    alert('Order saved');
+                }).saveOrder(order);
+            }
+            
+            function updateTransactions() {
+                let h = '';
+                transactions.slice(-10).reverse().forEach(t=>{
+                    if(t.customer!=='EXPENSE') h += \`<tr><td>\${t.date}</td><td>\${t.customer}</td><td>\${t.phone||''}</td><td>\${t.items}</td><td>Rs.\${t.total.toLocaleString()}</td><td>Rs.\${t.paid.toLocaleString()}</td><td>Rs.\${t.balance.toLocaleString()}</td><td><button class="btn-wa" onclick="sendWA('\${t.customer}','\${t.phone}',\${t.total})">📱</button> <button class="btn-print" onclick="printRec('\${t.customer}','\${t.phone}','\${t.address}','\${t.date}',\${t.total},\${t.paid},\${t.balance})">🖨️</button></td></tr>\`;
+                });
+                document.getElementById('transactionBody').innerHTML = h;
+                document.getElementById('summaryTotals').innerHTML = \`<span>Sales: Rs.\${totals.sales.toLocaleString()}</span> <span>Paid: Rs.\${totals.paid.toLocaleString()}</span> <span>Balance: Rs.\${totals.balance.toLocaleString()}</span>\`;
+            }
+            
+            function sendWA(n,p,t) {
+                if(!p) return alert('No phone');
+                window.open('https://wa.me/'+p.replace(/\\D/g,'')+'?text='+encodeURIComponent('GM Agency\\nCustomer: '+n+'\\nTotal: Rs.'+t), '_blank');
+            }
+            
+            function printRec(n,p,a,d,t,paid,bal) {
+                let w = window.open('','_blank');
+                w.document.write('<html><head><title>Receipt</title><style>body{font-family:Arial;padding:40px}.header{text-align:center;border-bottom:2px solid #00401A}img{width:80px}table{width:100%;margin:20px 0}td{padding:10px}</style></head><body><div class="header"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/State_emblem_of_Pakistan.svg"><h1>GM AGENCY OFFICIAL</h1></div><h2>Sales Receipt</h2><table><tr><td>Date:</td><td>'+d+'</td></tr><tr><td>Customer:</td><td>'+n+'</td></tr><tr><td>Phone:</td><td>'+(p||'')+'</td></tr><tr><td>Address:</td><td>'+(a||'')+'</td></tr><tr><td>Total:</td><td>Rs.'+t+'</td></tr><tr><td>Paid:</td><td>Rs.'+paid+'</td></tr><tr><td>Balance:</td><td>Rs.'+bal+'</td></tr></table><p>Status: '+(bal===0?'Paid':'Pending')+'</p><div class="footer">0302 3313131 | Ministry of Commerce</div><script>window.print()</script></body></html>');
+                w.document.close();
+            }
+        </script>
+    </body>
+    </html>
+  `).setTitle('GM Agency Official').setFaviconUrl('https://upload.wikimedia.org/wikipedia/commons/5/5b/State_emblem_of_Pakistan.svg');
+}
+
+// ==================== BACKEND FUNCTIONS (Google Sheets) ====================
+
+function getAllData() {
+  return { inventory: getInventory(), customers: getCustomers(), transactions: getTransactions() };
+}
+
+function getInventory() {
+  const s = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(INVENTORY_SHEET);
+  const d = s.getDataRange().getValues();
+  let inv = {};
+  for(let i=1; i<d.length; i++) inv[d[i][0]] = { stock: d[i][1], price: d[i][2] };
+  return inv;
+}
+
+function updatePrice(item, newPrice) {
+  const s = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(INVENTORY_SHEET);
+  const d = s.getDataRange().getValues();
+  for(let i=1; i<d.length; i++) if(d[i][0]===item) { s.getRange(i+1,3).setValue(Number(newPrice)); break; }
+  return getInventory();
+}
+
+function addStock(item, qty) {
+  const s = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(INVENTORY_SHEET);
+  const d = s.getDataRange().getValues();
+  for(let i=1; i<d.length; i++) if(d[i][0]===item) { s.getRange(i+1,2).setValue(Number(d[i][1])+Number(qty)); break; }
+  return getInventory();
+}
+
+function getCustomers() {
+  const s = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CUSTOMERS_SHEET);
+  const d = s.getDataRange().getValues();
+  let cust = [];
+  for(let i=1; i<d.length; i++) cust.push({ name: d[i][0], phone: d[i][1], address: d[i][2], city: d[i][3] });
+  return cust;
+}
+
+function addCustomer(c) {
+  const s = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CUSTOMERS_SHEET);
+  s.appendRow([c.name, c.phone, c.address, c.city]);
+  return getCustomers();
+}
+
+function addExpense(desc, amt) {
+  const s = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(TRANSACTIONS_SHEET);
+  s.appendRow([new Date().toLocaleDateString('en-CA'), 'EXPENSE', '', '', desc, Number(amt), 0, Number(amt), 0,0,0]);
+  return getTransactions();
+}
+
+function saveOrder() {
+                let v = +document.getElementById('qty_Vanda')?.value||0, m = +document.getElementById('qty_Mineral')?.value||0, u = +document.getElementById('qty_UMB')?.value||0;
+                let tot = calcTotal(), paid = +document.getElementById('cashReceived').value||0;
+                let order = {
+                    date: document.getElementById('saleDate').value,
+                    customer: document.getElementById('customerName').value,
+                    phone: document.getElementById('customerPhone').value,
+                    address: document.getElementById('customerAddress').value,
+                    city: document.getElementById('customerCity').value,
+                    vandaQty: v, mineralQty: m, umbQty: u,
+                    total: tot, paid: paid, balance: tot-paid,
+                    items: (v>0?1:0)+(m>0?1:0)+(u>0?1:0)+' item(s)',
+                    isNewCustomer: !document.getElementById('customerSelect').value
+                };
+                if(!order.customer) return alert('Enter customer name');
+                if(tot<=0) return alert('Add items');
                 
-                alert('Order saved successfully!');
-            }).saveOrder(order);
-        };
-    </script>
-</body>
-</html> 
+                google.script.run.withSuccessHandler(r=>{
+                    inventory = r.inventory; transactions = r.transactions.list; totals = r.transactions.totals;
+                    updateInventory(); updateTransactions();
+                    document.getElementById('customerName').value = ''; document.getElementById('customerPhone').value = '';
+                    document.getElementById('customerAddress').value = ''; document.getElementById('customerCity').value = '';
+                    document.getElementById('qty_Vanda').value = '0'; document.getElementById('qty_Mineral').value = '0';
+                    document.getElementById('qty_UMB').value = '0'; document.getElementById('cashReceived').value = '0';
+                    document.getElementById('totalBdi').innerText = '0';
+                    alert('Order saved');
+                }).saveOrder(order);
+            }
+            
+            function updateTransactions() {
+                let h = '';
+                transactions.slice(-10).reverse().forEach(t=>{
+                    if(t.customer!=='EXPENSE') h += \`<tr><td>\${t.date}</td><td>\${t.customer}</td><td>\${t.phone||''}</td><td>\${t.items}</td><td>Rs.\${t.total.toLocaleString()}</td><td>Rs.\${t.paid.toLocaleString()}</td><td>Rs.\${t.balance.toLocaleString()}</td><td><button class="btn-wa" onclick="sendWA('\${t.customer}','\${t.phone}',\${t.total})">📱</button> <button class="btn-print" onclick="printRec('\${t.customer}','\${t.phone}','\${t.address}','\${t.date}',\${t.total},\${t.paid},\${t.balance})">🖨️</button></td></tr>\`;
+                });
+                document.getElementById('transactionBody').innerHTML = h;
+                document.getElementById('summaryTotals').innerHTML = \`<span>Sales: Rs.\${totals.sales.toLocaleString()}</span> <span>Paid: Rs.\${totals.paid.toLocaleString()}</span> <span>Balance: Rs.\${totals.balance.toLocaleString()}</span>\`;
+            }
+            
+            function sendWA(n,p,t) {
+                if(!p) return alert('No phone');
+                window.open('https://wa.me/'+p.replace(/\\D/g,'')+'?text='+encodeURIComponent('GM Agency\\nCustomer: '+n+'\\nTotal: Rs.'+t), '_blank');
+            }
+            
+            function printRec(n,p,a,d,t,paid,bal) {
+                let w = window.open('','_blank');
+                w.document.write('<html><head><title>Receipt</title><style>body{font-family:Arial;padding:40px}.header{text-align:center;border-bottom:2px solid #00401A}img{width:80px}table{width:100%;margin:20px 0}td{padding:10px}</style></head><body><div class="header"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/State_emblem_of_Pakistan.svg"><h1>GM AGENCY OFFICIAL</h1></div><h2>Sales Receipt</h2><table><tr><td>Date:</td><td>'+d+'</td></tr><tr><td>Customer:</td><td>'+n+'</td></tr><tr><td>Phone:</td><td>'+(p||'')+'</td></tr><tr><td>Address:</td><td>'+(a||'')+'</td></tr><tr><td>Total:</td><td>Rs.'+t+'</td></tr><tr><td>Paid:</td><td>Rs.'+paid+'</td></tr><tr><td>Balance:</td><td>Rs.'+bal+'</td></tr></table><p>Status: '+(bal===0?'Paid':'Pending')+'</p><div class="footer">0302 3313131 | Ministry of Commerce</div><script>window.print()</script></body></html>');
+                w.document.close();
+            }
+        </script>
+    </body>
+    </html>
+  `).setTitle('GM Agency Official').setFaviconUrl('https://upload.wikimedia.org/wikipedia/commons/5/5b/State_emblem_of_Pakistan.svg');
+}
+
+// ==================== BACKEND FUNCTIONS (Google Sheets) ====================
+
+function getAllData() {
+  return { inventory: getInventory(), customers: getCustomers(), transactions: getTransactions() };
+}
+
+function getInventory() {
+  const s = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(INVENTORY_SHEET);
+  const d = s.getDataRange().getValues();
+  let inv = {};
+  for(let i=1; i<d.length; i++) inv[d[i][0]] = { stock: d[i][1], price: d[i][2] };
+  return inv;
+}
+
+function updatePrice(item, newPrice) {
+  const s = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(INVENTORY_SHEET);
+  const d = s.getDataRange().getValues();
+  for(let i=1; i<d.length; i++) if(d[i][0]===item) { s.getRange(i+1,3).setValue(Number(newPrice)); break; }
+  return getInventory();
+}
+
+function addStock(item, qty) {
+  const s = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(INVENTORY_SHEET);
+  const d = s.getDataRange().getValues();
+  for(let i=1; i<d.length; i++) if(d[i][0]===item) { s.getRange(i+1,2).setValue(Number(d[i][1])+Number(qty)); break; }
+  return getInventory();
+}
+
+function getCustomers() {
+  const s = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CUSTOMERS_SHEET);
+  const d = s.getDataRange().getValues();
+  let cust = [];
+  for(let i=1; i<d.length; i++) cust.push({ name: d[i][0], phone: d[i][1], address: d[i][2], city: d[i][3] });
+  return cust;
+}
+
+function addCustomer(c) {
+  const s = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CUSTOMERS_SHEET);
+  s.appendRow([c.name, c.phone, c.address, c.city]);
+  return getCustomers();
+}
+
+function addExpense(desc, amt) {
+  const s = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(TRANSACTIONS_SHEET);
+  s.appendRow([new Date().toLocaleDateString('en-CA'), 'EXPENSE', '', '', desc, Number(amt), 0, Number(amt), 0,0,0]);
+  return getTransactions();
+}
+
+function saveOrder(o) {
+  const s = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(TRANSACTIONS_SHEET);
+  s.appendRow([o.date, o.customer, o.phone, o.address, o.items, Number(o.total), Number(o.paid), Number(o.balance), Number(o.vandaQty), Number(o.mineralQty), Number(o.umbQty)]);
+  
+  const inv = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(INVENTORY_SHEET);
+  const d = inv.getDataRange().getValues();
+  for(let i=1; i<d.length; i++) {
+    if(d[i][0]==='Vanda') inv.getRange(i+1,2).setValue(Number(d[i][1])-Number(o.vandaQty));
+    else if(d[i][0]==='Mineral') inv.getRange(i+1,2).setValue(Number(d[i][1])-Number(o.mineralQty));
+    else if(d[i][0]==='UMB') inv.getRange(i+1,2).setValue(Number(d[i][1])-Number(o.umbQty));
+  }
+  
+  if(o.isNewCustomer && o.customer!=='EXPENSE') addCustomer({ name: o.customer, phone: o.phone, address: o.address, city: o.city||'' });
+  
+  return { inventory: getInventory(), transactions: getTransactions() };
+}
+      function getTransactions() {
+  const s = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(TRANSACTIONS_SHEET);
+  const d = s.getDataRange().getValues();
+  let trans = [], totalSales=0, totalPaid=0, totalBal=0, totalExp=0;
+  for(let i=1; i<d.length; i++) {
+    let t = { date: d[i][0], customer: d[i][1], phone: d[i][2], address: d[i][3], items: d[i][4], total: d[i][5], paid: d[i][6], balance: d[i][7] };
+    trans.push(t);
+    if(d[i][1]==='EXPENSE') totalExp += d[i][5];
+    else { totalSales += d[i][5]; totalPaid += d[i][6]; totalBal += d[i][7]; }
+  }
+  return { list: trans, totals: { sales: totalSales, paid: totalPaid, balance: totalBal, expenses: totalExp, netProfit: totalSales-totalExp } };
+}
